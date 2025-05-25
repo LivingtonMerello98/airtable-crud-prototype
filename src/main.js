@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-//import router from './router';
+import router from './router';
 import './style.scss';
 import App from './App.vue';
 
@@ -12,13 +12,14 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 //importare l'icona
-import { faCode, faPaintBrush, faRocket, faHandshake, faLaptopCode, faMobileAlt, faCloud, faDatabase, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faPaintBrush, faRocket, faHandshake, faLaptopCode, faMobileAlt, faCloud, faDatabase, faEdit, faTrash, faLink } from '@fortawesome/free-solid-svg-icons';
+
 
 
 // Aggiungi le icone alla libreria
-library.add(faCode, faPaintBrush, faRocket, faHandshake, faLaptopCode, faMobileAlt, faCloud, faDatabase, faEdit, faTrash);
+library.add(faCode, faPaintBrush, faRocket, faHandshake, faLaptopCode, faMobileAlt, faCloud, faDatabase, faEdit, faTrash, faLink);
 
 const app = createApp(App);
-//app.use(router);
+app.use(router);
 app.component('font-awesome-icon', FontAwesomeIcon); // Registrazione globale del componente FontAwesome
 app.mount('#app');

@@ -18,6 +18,8 @@ export default {
             recordToEdit: null,
             formFields: {},
             saving: false,
+            showLinkModal: false,
+            linkToShare: '',
         }
     },
 
@@ -163,9 +165,33 @@ export default {
             this.saving = false;
         }
         },
+            generateEditLink(record) {
+            // Ottieni l'origine completa tipo "http://localhost:5173"
+            const baseUrl = window.location.origin;
+            
+            // Costruisci il link completo (history mode)
+            const link = `${baseUrl}/edit-record?recordId=${record.id}`;
+
+            // Copia negli appunti
+            navigator.clipboard.writeText(link).then(() => {
+                console.log('link generato correttamente')
+            }).catch(() => {
+                alert('Impossibile copiare il link negli appunti. Ecco il link:\n' + link);
+            });
+
+            this.linkToShare = link;
+            this.showLinkModal = true;
+            },
 
         closeModal() {
             this.showModal = false;
+        },
+
+        openWhatsApp() {
+        const message = encodeURIComponent(`Ciao! Ecco il link per modificare il record: \n${this.linkToShare}`);
+        const whatsappUrl = `https://web.whatsapp.com/send?text=${message}`;
+        window.open(whatsappUrl, '_blank');
+        this.showLinkModal = false;
         }
     }
 }
@@ -213,9 +239,17 @@ export default {
                     <div style="width: 40px; cursor: pointer; color: #0d6efd;" @click="editRecord(record)" title="Modifica record" class="me-3">
                         <font-awesome-icon icon="laptop-code" />
                     </div>
-                    <div style="width: 40px; cursor: pointer; color: red;" @click="deleteRecord(record.id)" title="Elimina record">
+                    <!-- Icona elimina -->
+                    <div style="width: 40px; cursor: pointer; color: red;" @click="deleteRecord(record.id)" title="Elimina record" class="me-3">
                         <font-awesome-icon icon="trash" />
                     </div>
+                    <!-- genera link -->
+                    <div style="width: 40px; cursor: pointer; color: green;" 
+                        @click="generateEditLink(record)" 
+                        title="Genera link modifica">
+                        <font-awesome-icon icon="link" />
+                    </div>
+
                     <div v-for="header in headers" :key="header" class="record-field flex-grow-1 px-3 py-2"
                         :title="getTextValue(record.fields[header])">
 
@@ -257,6 +291,41 @@ export default {
                 </div>
             </div>
         </div>
+
+        <!-- Modal Link WhatsApp -->
+        <div v-if="showLinkModal" class="modal-backdrop">
+        <div class="modal-dialog text-dark" style="max-width: 400px; padding: 1rem;">
+            <div class="modal-content p-3 bg-white rounded d-flex flex-column align-items-center">
+            <h5 class="mb-3">Link di modifica</h5>
+            
+            <input 
+                type="text" 
+                class="form-control mb-3 text-center" 
+                :value="linkToShare" 
+                readonly 
+                @click="$event.target.select()" 
+                style="cursor: pointer; user-select: all;"
+            />
+
+            <button 
+                class="btn btn-success d-flex align-items-center gap-2"
+                @click="openWhatsApp"
+                title="Apri WhatsApp Web con il link"
+            >
+                <font-awesome-icon icon="whatsapp" style="font-size: 1.5rem;" />
+                Apri WhatsApp Web
+            </button>
+
+            <button 
+                class="btn btn-secondary mt-3" 
+                @click="showLinkModal = false"
+            >
+                Chiudi
+            </button>
+            </div>
+        </div>
+        </div>
+
 
     </div>
 </template>

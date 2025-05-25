@@ -1,20 +1,16 @@
+// src/router.js
 import { createRouter, createWebHistory } from 'vue-router';
-// 1.importare la pagina
-//import HomePage from './pages/HomePage.vue';
+import HomePage from './pages/HomePage.vue';
+import RecordEditor from './components/RecordEditor.vue';
 
-
-//2 definiamo la rotta con Name, Path e Component.
 const routes = [
-    {
-        name: 'homePage',
-        path: '/',
-        component: HomePage
-    },
-]
+    { name: 'home', path: '/', component: HomePage },
+    { name: 'edit-record', path: '/edit-record', component: RecordEditor },
+];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes
+    history: createWebHistory(),  // <- history mode
+    routes,
 });
 
 export default router;
