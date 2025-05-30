@@ -119,7 +119,27 @@ export default {
             this.showModal = true;
         },
         getWritableFields(fields) {
-        const nonWritable = ['PROFILATI','COD.FISCALE+','IBAN+','Numero+','Double Check', 'Residenza 1line', 'Luogo di nascita 1line','Via e civico Residenza', 'MAat+Cod+Aliq','Regime P.iva CARBONE','Mansione solo italiano','Inq.Lucia','Permesso 1line','p.ivaAlkemy','Cittadinanza e permesso','Città e provincia Residenza','Tipologia Lavoratore'];
+        const nonWritable = [
+        'PROFILATI',
+        'CAP',
+        'CAP (from Residenza (CAP))', 
+        'COD.FISCALE+',
+        'IBAN+',
+        'Numero+',
+        'Double Check',
+        'Residenza 1line',
+        'Luogo di nascita 1line',
+        'Via e civico Residenza',
+        'MAat+Cod+Aliq',
+        'Regime P.iva CARBONE',
+        'Mansione solo italiano',
+        'Inq.Lucia',
+        'Permesso 1line',
+        'p.ivaAlkemy',
+        'Cittadinanza e permesso',
+        'Città e provincia Residenza',
+        'Tipologia Lavoratore'
+      ];
         const filtered = {};
         for (const key in fields) {
             if (!nonWritable.includes(key)) {
@@ -168,6 +188,7 @@ export default {
             generateEditLink(record) {
             // Ottieni l'origine completa tipo "http://localhost:5173"
             const baseUrl = window.location.origin;
+            console.log(window.location.origin)
             
             // Costruisci il link completo (history mode)
             const link = `${baseUrl}/edit-record?recordId=${record.id}`;

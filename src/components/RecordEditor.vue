@@ -13,6 +13,7 @@ export default {
     }
   },
   mounted() {
+    console.log('componente montato')
     this.recordId = this.$route.query.recordId;
     if (this.recordId) {
         this.fetchRecord(this.recordId);
@@ -41,7 +42,27 @@ export default {
     },
     getWritableFields(fields) {
       // stessa lista campi non modificabili di AirtableTable
-      const nonWritable = ['PROFILATI','COD.FISCALE+','IBAN+','Numero+','Double Check', 'Residenza 1line', 'Luogo di nascita 1line','Via e civico Residenza', 'MAat+Cod+Aliq','Regime P.iva CARBONE','Mansione solo italiano','Inq.Lucia','Permesso 1line','p.ivaAlkemy','Cittadinanza e permesso','Città e provincia Residenza','Tipologia Lavoratore'];
+      const nonWritable = [
+        'PROFILATI',
+        'CAP',
+        'CAP (from Residenza (CAP))', 
+        'COD.FISCALE+',
+        'IBAN+',
+        'Numero+',
+        'Double Check',
+        'Residenza 1line',
+        'Luogo di nascita 1line',
+        'Via e civico Residenza',
+        'MAat+Cod+Aliq',
+        'Regime P.iva CARBONE',
+        'Mansione solo italiano',
+        'Inq.Lucia',
+        'Permesso 1line',
+        'p.ivaAlkemy',
+        'Cittadinanza e permesso',
+        'Città e provincia Residenza',
+        'Tipologia Lavoratore'
+      ];
       const filtered = {};
       for (const key in fields) {
           if (!nonWritable.includes(key)) {
@@ -51,9 +72,11 @@ export default {
       return filtered;
     },
     async saveChanges() {
+      console.log('cliccato');
       this.saving = true;
       try {
         const writableFields = this.getWritableFields(this.formFields);
+        console.log('WILL SAVE FIELDS:', writableFields);
         const response = await fetch(`${this.API_URL}`, {
           method: 'PATCH',
           headers: {
