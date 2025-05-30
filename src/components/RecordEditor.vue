@@ -108,37 +108,39 @@ export default {
 </script>
 
 <template>
-  <div class="p-4 text-white">
-    <h2 class="mb-4">Modifica Record</h2>
-
-    <div v-if="loading" class="fs-5">Caricamento record...</div>
-    <div v-else-if="error" class="text-danger fs-5">{{ error }}</div>
-    <div v-else>
-      <div class="row g-3">
-        <div 
-          v-for="(value, key) in formFields" 
-          :key="key" 
-          class="col-md-6 d-flex flex-column"
-        >
-          <label :for="key" class="form-label fw-semibold text-light">
-            {{ key }}
-          </label>
-          <input 
-            type="text" 
-            class="form-control form-control-sm shadow-sm"
-            v-model="formFields[key]" 
-            :id="key" 
-          />
+  <div class="container">
+    <div class="p-4 text-white">
+      <h2 class="mb-4">Modifica Record</h2>
+  
+      <div v-if="loading" class="fs-5">Caricamento record...</div>
+      <div v-else-if="error" class="text-danger fs-5">{{ error }}</div>
+      <div v-else>
+        <div class="row g-3">
+          <div 
+            v-for="(value, key) in formFields" 
+            :key="key" 
+            class="col-md-6 d-flex flex-column"
+          >
+            <label :for="key" class="form-label fw-semibold text-light">
+              {{ key }}
+            </label>
+            <input 
+              type="text" 
+              class="form-control form-control-sm shadow-sm"
+              v-model="formFields[key]" 
+              :id="key" 
+            />
+          </div>
         </div>
+  
+        <button 
+          class="btn btn-primary mt-4 px-4" 
+          @click="saveChanges" 
+          :disabled="saving"
+        >
+          {{ saving ? 'Salvando...' : 'Salva modifiche' }}
+        </button>
       </div>
-
-      <button 
-        class="btn btn-primary mt-4 px-4" 
-        @click="saveChanges" 
-        :disabled="saving"
-      >
-        {{ saving ? 'Salvando...' : 'Salva modifiche' }}
-      </button>
     </div>
   </div>
 </template>
