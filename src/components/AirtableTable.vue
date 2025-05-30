@@ -204,7 +204,7 @@ export default {
         },
 
         openWhatsApp() {
-        const message = encodeURIComponent(`Ciao! Usa questo link per aggiornare i tuoi dati: avrai 5 minuti di tempo dall’apertura: \n${this.linkToShare}`);
+        const message = encodeURIComponent(`Ciao! Usa questo link per aggiornare i tuoi dati, avrai 5 minuti di tempo dall’apertura: \n${this.linkToShare}`);
         const whatsappUrl = `https://web.whatsapp.com/send?text=${message}`;
         window.open(whatsappUrl, '_blank');
         this.showLinkModal = false;
