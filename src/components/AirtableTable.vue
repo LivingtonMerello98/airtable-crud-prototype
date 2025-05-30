@@ -185,31 +185,26 @@ export default {
             this.saving = false;
         }
         },
-            generateEditLink(record) {
-            // Ottieni l'origine completa tipo "http://localhost:5173"
+        generateEditLink(record) {
             const baseUrl = window.location.origin;
-            console.log(window.location.origin)
-            
-            // Costruisci il link completo (history mode)
             const link = `${baseUrl}/edit-record?recordId=${record.id}`;
 
-            // Copia negli appunti
             navigator.clipboard.writeText(link).then(() => {
-                console.log('link generato correttamente')
+                console.log('Link generato correttamente');
             }).catch(() => {
                 alert('Impossibile copiare il link negli appunti. Ecco il link:\n' + link);
             });
 
             this.linkToShare = link;
             this.showLinkModal = true;
-            },
+        },
 
         closeModal() {
             this.showModal = false;
         },
 
         openWhatsApp() {
-        const message = encodeURIComponent(`Ciao! Ecco il link per modificare il record: \n${this.linkToShare}`);
+        const message = encodeURIComponent(`Ciao! Usa questo link per aggiornare i tuoi dati: avrai 5 minuti di tempo dall’apertura: \n${this.linkToShare}`);
         const whatsappUrl = `https://web.whatsapp.com/send?text=${message}`;
         window.open(whatsappUrl, '_blank');
         this.showLinkModal = false;

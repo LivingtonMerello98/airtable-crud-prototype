@@ -10,19 +10,42 @@ export default {
       loading: true,
       error: null,
       saving: false,
+      timeRemaining: 300,
+    }
+  },
+  computed: {
+    formattedTime() {
+      const minutes = Math.floor(this.timeRemaining / 60).toString().padStart(2, '0');
+      const seconds = (this.timeRemaining % 60).toString().padStart(2, '0');
+      return `${minutes}:${seconds}`;
     }
   },
   mounted() {
-    console.log('componente montato')
+    console.log('componente montato');
+
+    // Timer countdown visuale
+    this.startCountdown();
+
     this.recordId = this.$route.query.recordId;
     if (this.recordId) {
-        this.fetchRecord(this.recordId);
+      this.fetchRecord(this.recordId);
     } else {
-        this.error = 'Nessun record selezionato';
-        this.loading = false;
+      this.error = 'Nessun record selezionato';
+      this.loading = false;
     }
   },
   methods: {
+    startCountdown() {
+      const countdown = setInterval(() => {
+        if (this.timeRemaining > 0) {
+          this.timeRemaining--;
+        } else {
+          clearInterval(countdown);
+          this.expired = true;
+          this.error = 'Il tempo per modificare il record è scaduto.';
+        }
+      }, 1000);
+    },
     async fetchRecord(id) {
       try {
         const res = await fetch(`${this.API_URL}/${id}`, {
@@ -110,6 +133,9 @@ export default {
 <template>
   <div class="container">
     <div class="p-4 text-white">
+      <div v-if="!expired" class="mt-3 text-warning">
+        Tempo rimanente: {{ formattedTime }}
+      </div>
       <h2 class="mb-4">Modifica Record</h2>
   
       <div v-if="loading" class="fs-5">Caricamento record...</div>
@@ -124,11 +150,12 @@ export default {
             <label :for="key" class="form-label fw-semibold text-light">
               {{ key }}
             </label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               class="form-control form-control-sm shadow-sm"
-              v-model="formFields[key]" 
-              :id="key" 
+              v-model="formFields[key]"
+              :id="key"
+              :disabled="expired"
             />
           </div>
         </div>
