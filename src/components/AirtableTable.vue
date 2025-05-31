@@ -13,7 +13,7 @@ export default {
             nextOffset: null,
             previousOffsets: [],
             pageIndex: 0,
-
+            searchTerm: '',
             showModal: false,
             recordToEdit: null,
             formFields: {},
@@ -25,6 +25,24 @@ export default {
 
     mounted() {
         this.fetchData();
+    },
+    computed:{
+        filteredRecords() {
+            if (!this.searchTerm) return this.records;
+
+            const lowerTerm = this.searchTerm.toLowerCase();
+
+            return this.records.filter(record =>
+            Object.values(record.fields).some(field => {
+                if (!field) return false;
+                const value = Array.isArray(field)
+                ? field.map(v => (typeof v === 'object' ? JSON.stringify(v) : v)).join(', ')
+                : field.toString();
+
+                return value.toLowerCase().includes(lowerTerm);
+            })
+            );
+        }
     },
     methods: {
         async fetchData(offset = null) {
@@ -217,7 +235,18 @@ export default {
 
 <template>
     <div class="p-4 bg-dark">
-        <h2 class="mb-4 fw-bold text-white">Dati di Inquadramento Aziendale</h2>
+        <div class="container-fluid d-flex justify-content-between">
+            <h2 class="mb-4 fw-bold text-white">Dati di Inquadramento Aziendale</h2>
+            <div class="mb-3">
+                <input
+                v-model="searchTerm"
+                type="text"
+                class="form-control text-white border-light"
+                placeholder="Cerca nei record..."
+                style="background-color: #343a40; color:white;"
+                />
+            </div>
+        </div>
         <div class="mt-3 mb-3 text-start d-flex gap-2 d-none">
             <button class="btn btn-secondary" @click="goPrevious" :disabled="!previousOffsets.length || loading">
                 Precedente
@@ -249,7 +278,7 @@ export default {
 
             <!-- Records -->
             <div class="records">
-                <div v-for="(record, index) in records" :key="record.id"
+                <div v-for="(record, index) in filteredRecords" :key="record.id"
                     class="record-item d-flex border-bottom align-items-center">
                     
                     <!-- Numero -->
@@ -290,7 +319,7 @@ export default {
             <div class="modal-dialog text-dark ">
                 <div class="modal-content p-3 bg-white rounded d-flex flex-column">
                     <h5>Modifica Record</h5>
-                    <div class="modal-body flex-grow-1">
+                    <div class="modal-body   justify-content-center">
                         <div class="row">
                         <div v-for="(value, key) in formFields" :key="key" class="col-md-6 mb-3">
                             <label :for="key" class="form-label fw-semibold">{{ key }}</label>
@@ -408,9 +437,9 @@ export default {
   background: white;
   border-radius: 0.3rem;
   box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
-  max-height: 700px;
+  max-height: 400px;
   display: flex;
-  flex-direction: column;
+  width: 800px;
 }
 
 
@@ -418,8 +447,10 @@ export default {
 .modal-body {
   flex-grow: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 0.5rem; /* spazio per scroll */
 }
+
 
 /* opzionale: rendi il label un po' più leggibile */
 .form-label {
