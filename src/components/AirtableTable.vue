@@ -218,7 +218,7 @@ export default {
 <template>
     <div class="p-4 bg-dark">
         <h2 class="mb-4 fw-bold text-white">Dati di Inquadramento Aziendale</h2>
-        <div class="mt-3 mb-3 text-start d-flex gap-2">
+        <div class="mt-3 mb-3 text-start d-flex gap-2 d-none">
             <button class="btn btn-secondary" @click="goPrevious" :disabled="!previousOffsets.length || loading">
                 Precedente
             </button>
@@ -231,79 +231,80 @@ export default {
         <div v-if="loading" class="text-warning">Caricamento dati...</div>
         <div v-else-if="error" class="text-danger fw-semibold">Errore: {{ error }}</div>
         <div class="data-container bg-dark" v-else
-            style="height: 700px; overflow-x: auto; overflow-y: auto; border-radius: 0.25rem;">
+            style="overflow-x: auto; overflow-y: auto; border-radius: 0.25rem;">
             <!-- Intestazioni -->
             <div class="headers d-flex border-bottom">
                 <div class="header-item text-start px-3 py-2 fw-semibold text-white bg-dark" style="min-width: 60px;">
                     #
+                </div>
+                <div class="header-item text-start px-3 py-2 fw-semibold text-white bg-dark" style="min-width: 120px;">
+                    Azioni
                 </div>
                 <div v-for="header in headers" :key="header"
                     class="header-item flex-grow-1 text-start px-3 py-2 fw-semibold text-white bg-dark">
                     {{ header }}
                 </div>
             </div>
+
+
             <!-- Records -->
             <div class="records">
                 <div v-for="(record, index) in records" :key="record.id"
                     class="record-item d-flex border-bottom align-items-center">
-
-                    <!-- Numero progressivo -->
+                    
+                    <!-- Numero -->
                     <div class="record-field px-3 py-2" style="min-width: 60px;">
-                         {{ index + 1 + (pageIndex * 100) }}
-                    </div>
-                    <!-- Icona edit -->
-                    <div style="width: 40px; cursor: pointer; color: #0d6efd;" @click="editRecord(record)" title="Modifica record" class="me-3">
-                        <font-awesome-icon icon="laptop-code" />
-                    </div>
-                    <!-- Icona elimina -->
-                    <div style="width: 40px; cursor: pointer; color: red;" @click="deleteRecord(record.id)" title="Elimina record" class="me-3">
-                        <font-awesome-icon icon="trash" />
-                    </div>
-                    <!-- genera link -->
-                    <div style="width: 40px; cursor: pointer; color: green;" 
-                        @click="generateEditLink(record)" 
-                        title="Genera link modifica">
-                        <font-awesome-icon icon="link" />
+                        {{ index + 1 + (pageIndex * 100) }}
                     </div>
 
+                    <!-- Azioni -->
+                    <div class="record-field d-flex gap-2 px-3 py-2" style="min-width: 120px;">
+                        <div style="cursor: pointer; color: #0d6efd;" @click="editRecord(record)" title="Modifica record">
+                            <font-awesome-icon icon="laptop-code" />
+                        </div>
+                        <div style="cursor: pointer; color: red;" @click="deleteRecord(record.id)" title="Elimina record">
+                            <font-awesome-icon icon="trash" />
+                        </div>
+                        <div style="cursor: pointer; color: green;" @click="generateEditLink(record)" title="Genera link modifica">
+                            <font-awesome-icon icon="link" />
+                        </div>
+                    </div>
+                    
+                    <!-- Campi dinamici -->
                     <div v-for="header in headers" :key="header" class="record-field flex-grow-1 px-3 py-2"
                         :title="getTextValue(record.fields[header])">
-
-                        <!-- Se è un campo immagine -->
                         <div v-if="isImageField(record.fields[header])">
                             <img :src="record.fields[header][0].thumbnails.large.url" :alt="header"
                                 class="img-fluid rounded" style="max-width: 100px; max-height: 100px;" />
                         </div>
-
-                        <!-- Altrimenti mostra il contenuto testuale -->
                         <div v-else>
                             {{ getTextValue(record.fields[header]) }}
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
         <!-- Modal modifica -->
         <div v-if="showModal" class="modal-backdrop">
             <div class="modal-dialog text-dark ">
-                <div class="modal-content p-3 bg-white rounded d-flex flex-column" style="max-height: 900px; width: 600px;">
-                <h5>Modifica Record</h5>
-
-                <div class="modal-body flex-grow-1 overflow-auto">
-                    <div class="row">
-                    <div v-for="(value, key) in formFields" :key="key" class="col-md-6 mb-3">
-                        <label :for="key" class="form-label fw-semibold">{{ key }}</label>
-                        <input type="text" class="form-control" v-model="formFields[key]" :id="key" />
+                <div class="modal-content p-3 bg-white rounded d-flex flex-column">
+                    <h5>Modifica Record</h5>
+                    <div class="modal-body flex-grow-1">
+                        <div class="row">
+                        <div v-for="(value, key) in formFields" :key="key" class="col-md-6 mb-3">
+                            <label :for="key" class="form-label fw-semibold">{{ key }}</label>
+                            <input type="text" class="form-control" v-model="formFields[key]" :id="key" />
+                        </div>
+                        </div>
                     </div>
-                    </div>
-                </div>
 
-                <div class="modal-footer d-flex justify-content-end gap-2 mt-3 pt-3 border-top">
-                    <button class="btn btn-secondary" @click="closeModal" :disabled="saving">Annulla</button>
-                    <button class="btn btn-primary" @click="saveChanges" :disabled="saving">
-                    {{ saving ? 'Salvando...' : 'Salva' }}
-                    </button>
-                </div>
+                    <div class="modal-footer d-flex justify-content-end gap-2 mt-3 pt-3 border-top">
+                        <button class="btn btn-secondary" @click="closeModal" :disabled="saving">Annulla</button>
+                        <button class="btn btn-primary" @click="saveChanges" :disabled="saving">
+                        {{ saving ? 'Salvando...' : 'Salva' }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -351,6 +352,7 @@ export default {
     border: 1px solid #dee2e6;
     background: #fff;
     box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
+    height: 510px;
 }
 
 /* Intestazioni */
@@ -407,7 +409,6 @@ export default {
   border-radius: 0.3rem;
   box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
   max-height: 700px;
-  width: 600px;
   display: flex;
   flex-direction: column;
 }

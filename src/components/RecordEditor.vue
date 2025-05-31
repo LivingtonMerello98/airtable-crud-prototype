@@ -10,7 +10,7 @@ export default {
       loading: true,
       error: null,
       saving: false,
-      timeRemaining: 300,
+      timeRemaining: 10,
     }
   },
   computed: {
