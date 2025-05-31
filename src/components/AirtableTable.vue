@@ -20,6 +20,8 @@ export default {
             saving: false,
             showLinkModal: false,
             linkToShare: '',
+            whatsappNumber: '',
+
         }
     },
 
@@ -65,6 +67,7 @@ export default {
 
                 if (data.records) {
                     this.records = data.records;
+                    console.log(this.records);
 
                     if (!this.headers.length && data.records.length) {
                         this.headers = Object.keys(data.records[0]?.fields || {});
@@ -87,7 +90,6 @@ export default {
         },
         async deleteRecord(recordId) {
             if (!confirm('Sei sicuro di voler eliminare questo record?')) return;
-
             try {
                 const response = await fetch(`${this.API_URL}/${recordId}`, {
                     method: 'DELETE',
@@ -100,7 +102,6 @@ export default {
                     const errData = await response.json();
                     throw new Error(errData.error?.message || 'Errore durante la cancellazione');
                 }
-
                 // Ricarica la lista dei dati
                 await this.fetchData(this.currentOffset);
             } catch (error) {
@@ -214,16 +215,22 @@ export default {
             });
 
             this.linkToShare = link;
+            this.whatsappNumber = this.formatWhatsAppNumber(record); // ✅ Salva numero
             this.showLinkModal = true;
         },
 
         closeModal() {
             this.showModal = false;
         },
+        formatWhatsAppNumber(record) {
+        const prefix = (record.fields["Phone Nationality"] || '').replace(/[^\d+]/g, '');
+        const number = (record.fields["Numero Tel"] || '').replace(/[^\d]/g, '');
+        return `${prefix}${number}`;
+        },
 
         openWhatsApp() {
         const message = encodeURIComponent(`Ciao! Usa questo link per aggiornare i tuoi dati, avrai 5 minuti di tempo dall’apertura: \n${this.linkToShare}`);
-        const whatsappUrl = `https://web.whatsapp.com/send?text=${message}`;
+        const whatsappUrl = `https://wa.me/${this.whatsappNumber}?text=${message}`;
         window.open(whatsappUrl, '_blank');
         this.showLinkModal = false;
         }
