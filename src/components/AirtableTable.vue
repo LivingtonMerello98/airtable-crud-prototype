@@ -222,18 +222,19 @@ export default {
         closeModal() {
             this.showModal = false;
         },
+
         formatWhatsAppNumber(record) {
-        const prefix = (record.fields["Phone Nationality"] || '').replace(/[^\d+]/g, '');
-        const number = (record.fields["Numero Tel"] || '').replace(/[^\d]/g, '');
-        return `${prefix}${number}`;
+            const prefix = (record.fields["Phone Nationality"] || '').replace(/[^\d]/g, '');
+            const number = (record.fields["Numero Tel"] || '').replace(/[^\d]/g, '');
+            return `${prefix}${number}`;
         },
 
         openWhatsApp() {
-        const message = encodeURIComponent(`Ciao! Usa questo link per aggiornare i tuoi dati, avrai 5 minuti di tempo dall’apertura: \n${this.linkToShare}`);
-        const whatsappUrl = `https://wa.me/${this.whatsappNumber}?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-        this.showLinkModal = false;
+        const message = `Ciao! Usa questo link per aggiornare i tuoi dati, avrai 5 minuti di tempo dall'apertura: ${this.linkToShare}`;
+        const whatsappUrl = `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.location.href = whatsappUrl;
         }
+
     }
 }
 </script>
