@@ -7,6 +7,7 @@ export default {
 
 <template>
     <div class="bg-dark">
+        <!-- router navigazione -->
         <router-view />
     </div>
 </template>

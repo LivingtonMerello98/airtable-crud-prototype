@@ -29,6 +29,7 @@ export default {
       <button class="btn btn-primary" @click="openForm">➕ Nuovo Profilo</button>
     </div>
 
+    
     <AirtableTable />
 
     <!-- Modal Nuovo Record -->
@@ -38,6 +39,7 @@ export default {
         <AirtableForm />
       </div>
     </div>
+
   </section>
 </template>
 
