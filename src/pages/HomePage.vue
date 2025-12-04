@@ -25,10 +25,6 @@ export default {
 
 <template>
   <section class="bg-dark text-white min-vh-100 p-4">
-    <div class="d-flex justify-content-end mb-4">
-      <button class="btn btn-primary" @click="openForm">➕ Nuovo Profilo</button>
-    </div>
-
     
     <AirtableTable />
 

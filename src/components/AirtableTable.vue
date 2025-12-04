@@ -3,8 +3,6 @@ export default {
   name: 'AirtableTable',
   data() {
     return {
-      API_URL: import.meta.env.VITE_AIRTABLE_API_URL,
-      API_KEY: import.meta.env.VITE_AIRTABLE_API_KEY,
       records: [],
       loading: false,
       error: null
@@ -18,11 +16,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const res = await fetch(this.API_URL + '?pageSize=100', {
-          headers: {
-            Authorization: `Bearer ${this.API_KEY}`
-          }
-        });
+        const res = await fetch('/.netlify/functions/get-personale');
         const data = await res.json();
         if (data.records) {
           this.records = data.records;
@@ -39,14 +33,13 @@ export default {
     },
     formatNumber(raw) {
       if (!raw) return '';
-      // Rimuove apostrofi, spazi, parentesi e caratteri non numerici tranne il +
       return raw.replace(/['\s()-]/g, '');
     },
-    openWhatsApp(number, name) {
-    const cleanNumber = this.formatNumber(number);
-    const message = `Ciao ${name}, questo è un messaggio automatico.`;
-    const url = `https://web.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    openWhatsApp(number, name, link) {
+      const cleanNumber = this.formatNumber(number);
+      const message = `Ciao ${name}, per procedere alla conferma del collocamento ti prego di verificare i tuoi dati al seguente link: ${link}`;
+      const url = `https://web.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
     }
   }
 }
@@ -66,8 +59,7 @@ export default {
             <th>Nome</th>
             <th>Cognome</th>
             <th>Mansione</th>
-            <th>Numero originale</th>
-            <th>Numero pulito</th>
+            <th>Numero</th>
             <th>Azioni</th>
           </tr>
         </thead>
@@ -76,11 +68,14 @@ export default {
             <td>{{ record.fields['Nome (completo come da documenti)'] || record.fields['Nome'] }}</td>
             <td>{{ record.fields['Cognome'] }}</td>
             <td>{{ record.fields['Mansione'] }}</td>
-            <td>{{ record.fields['Numero+'] }}</td>
             <td>{{ formatNumber(record.fields['Numero+']) }}</td>
             <td>
               <button class="btn btn-success btn-sm"
-                      @click="openWhatsApp(record.fields['Numero+'], record.fields['Nome (completo come da documenti)'] || record.fields['Nome'])">
+                      @click="openWhatsApp(
+                        record.fields['Numero+'],
+                        record.fields['Nome (completo come da documenti)'] || record.fields['Nome'],
+                        record.fields['TEST INTERAZIONE']
+                      )">
                 WhatsApp
               </button>
             </td>
