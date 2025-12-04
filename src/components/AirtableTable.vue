@@ -44,7 +44,7 @@ export default {
     },
     openWhatsApp(number, name, link) {
     const cleanNumber = this.formatNumber(number);
-    const message = `Ciao ${name}, questo è un messaggio automatico, ecco il link che ti interessa: ${link}`;
+    const message = `Ciao ${name}, per procedere al tuo collocamento ti chiedo gentilmente di verificarli al seguente link: ${link}`;
     const url = `https://web.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 
@@ -70,7 +70,6 @@ export default {
             <th>Cognome</th>
             <th>Mansione</th>
             <th>Numero pulito</th>
-            <th>link</th>
             <th>Azioni</th>
           </tr>
         </thead>
@@ -80,7 +79,6 @@ export default {
             <td>{{ record.fields['Cognome'] }}</td>
             <td>{{ record.fields['Mansione'] }}</td>
             <td>{{ formatNumber(record.fields['Numero+']) }}</td>
-            <td>{{ record.fields['TEST INTERAZIONE'] }}</td>
             <td>
               <button class="btn btn-success btn-sm"
                       @click="openWhatsApp(
