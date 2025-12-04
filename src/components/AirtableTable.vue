@@ -42,9 +42,9 @@ export default {
       // Rimuove apostrofi, spazi, parentesi e caratteri non numerici tranne il +
       return raw.replace(/['\s()-]/g, '');
     },
-    openWhatsApp(number, name) {
+    openWhatsApp(number, name, link) {
     const cleanNumber = this.formatNumber(number);
-    const message = `Ciao ${name}, questo è un messaggio automatico.`;
+    const message = `Ciao ${name}, questo è un messaggio automatico, ecco il link che ti interessa: ${link}`;
     const url = `https://web.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 
@@ -69,8 +69,8 @@ export default {
             <th>Nome</th>
             <th>Cognome</th>
             <th>Mansione</th>
-            <th>Numero originale</th>
             <th>Numero pulito</th>
+            <th>link</th>
             <th>Azioni</th>
           </tr>
         </thead>
@@ -79,11 +79,14 @@ export default {
             <td>{{ record.fields['Nome (completo come da documenti)'] || record.fields['Nome'] }}</td>
             <td>{{ record.fields['Cognome'] }}</td>
             <td>{{ record.fields['Mansione'] }}</td>
-            <td>{{ record.fields['Numero+'] }}</td>
             <td>{{ formatNumber(record.fields['Numero+']) }}</td>
+            <td>{{ record.fields['TEST INTERAZIONE'] }}</td>
             <td>
               <button class="btn btn-success btn-sm"
-                      @click="openWhatsApp(record.fields['Numero+'], record.fields['Nome (completo come da documenti)'] || record.fields['Nome'])">
+                      @click="openWhatsApp(
+                        record.fields['Numero+'], 
+                        record.fields['Nome (completo come da documenti)'] || record.fields['Nome'],
+                        record.fields['TEST INTERAZIONE'])">
                 WhatsApp
               </button>
             </td>
